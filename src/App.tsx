@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./App.css";
 
+let memory: number = 0;
+let operator: string = "";
+
 function App() {
   const [display, setDisplay] = useState(0);
-  const [memory, setMemory] = useState(0);
-  const [operator, setOperator] = useState("");
   const [error, setError] = useState(false);
 
   const numbers: number[] = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -31,57 +32,44 @@ function App() {
 
   const handleAllClear = () => {
     setDisplay(0);
-    setMemory(0);
+    memory = 0;
   };
 
   const handleNumberClick = (number: number) => {
     if (error) {
       setError(false);
-      setDisplay(number);
     }
-    if (memory === 0) {
-      if (display === 0) {
-        setDisplay(number);
-      } else if (display > 0 && display < 10) {
-        setDisplay(display * 10 + number);
-      } else if (display > 10 && display < 100) {
-        setDisplay(display * 10 + number);
-      } else {
-        alert("You can't enter more than 3 digits");
-      }
+
+    if (display === 0) {
+      setDisplay(number);
+    } else if (display > 0 && display < 10) {
+      setDisplay(display * 10 + number);
+    } else if (display > 10 && display < 100) {
+      setDisplay(display * 10 + number);
     } else {
-      setDisplay(0);
-      if (display === 0) {
-        setDisplay(number);
-      } else if (display > 0 && display < 10) {
-        setDisplay(display * 10 + number);
-      } else if (display > 10 && display < 100) {
-        setDisplay(display * 10 + number);
-      } else {
-        alert("You can't enter more than 3 digits");
-        setDisplay(display);
-      }
+      alert("You can't enter more than 3 digits");
+      setDisplay(display);
     }
   };
 
   const handleOperatorClick = (operators: string) => {
     if (operators === "=") {
-      if (memory === 0 || !operator) {
+      if (memory === 0 && !operator) {
         return;
       }
       setError(false);
       const result = calculate(memory, display, operator);
       setDisplay(result);
-      setMemory(0);
-      setOperator("");
+      memory = 0;
+      operator = "";
     } else {
       if (memory !== 0 && operator !== "" && display !== 0) {
         alert("You can calculate only two numbers at a time");
         return;
       }
       setError(false);
-      setMemory(display);
-      setOperator(operators);
+      memory = display;
+      operator = operators;
       setDisplay(0);
     }
   };
